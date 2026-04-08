@@ -24,17 +24,21 @@ pipeline {
 
     stage('Docker image build and push') {
       steps {
-        withDockerRegistry([ CredentialsId: 'dockerhub' , url: "" ])
-          sh 'docker build -t alihussnain0162/devsecops-learning:""$GIT_COMMIT"" .'
-          sh 'docker push alihussnain0162/devsecops-learning:""$GIT_COMMIT""'
-       }
-     }
+        withDockerRegistry([credentialsId: 'dockerhub', url: ""]) {
+          sh "docker build -t alihussnain0162/devsecops-learning:${GIT_COMMIT} ."
+          sh "docker push alihussnain0162/devsecops-learning:${GIT_COMMIT}"
+        }
+      }
+    }
+
     stage('Deploy image on Kubernetes') {
       steps {
-        withKubeConfig ([ CredentialsId: kubeconfig ])
+        withKubeConfig([credentialsId: 'kubeconfig']) {
           sh "sed -i 's#replace#alihussnain0162/devsecops-learning:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
           sh "kubectl apply -f k8s_deployment_service.yaml"
-       }
-     }
-   }
- }
+        }
+      }
+    }
+
+  }
+}
