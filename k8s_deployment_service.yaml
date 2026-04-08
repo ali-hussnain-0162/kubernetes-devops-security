@@ -16,7 +16,7 @@ spec:
         app: devsecops
     spec:
       containers:
-      - image: alihussnain0162/devsecops-learning:latest
+      - image: replace
         name: devsecops-container
 ---
 apiVersion: v1
